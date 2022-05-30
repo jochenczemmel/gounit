@@ -1,4 +1,4 @@
-name: Go
+name: Go-Test
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build:
+  unittest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -18,12 +18,9 @@ jobs:
       with:
         go-version: 1.18
 
-#    - name: Build
-#      run: go build -v ./...
-
-    - name: Debug
-      run: env | sort
-
-    - name: Test
+    - name: Run Unit-Tests
       run: go test ./...
-#      run: go test -v ./...
+
+#     - name: Debug
+#       run: env | sort
+
