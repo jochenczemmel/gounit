@@ -413,12 +413,12 @@ func TestTrueFalse(t *testing.T) {
 			name:             "true",
 			isTrue:           true,
 			wantFalseError:   true,
-			wantFalseMessage: `ERROR: got true, want false`,
+			wantFalseMessage: `ERROR: got: "true", want: "false"`,
 		},
 		{
 			name:            "false",
 			wantTrueError:   true,
-			wantTrueMessage: `ERROR: got false, want true`,
+			wantTrueMessage: `ERROR: got: "false", want: "true"`,
 		},
 	}
 
