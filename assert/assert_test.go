@@ -389,13 +389,74 @@ func TestErrorFail(t *testing.T) {
 				}
 				if ts.FailMessage != c.wantMessage {
 					t.Errorf("ERROR: got: \"%s\", want: \"%s\"",
-						ts.ErrorMessage, c.wantMessage)
+						ts.FailMessage, c.wantMessage)
 				}
 			}
 			if !c.wantError && ts.FailCalled {
 				t.Errorf("ERROR: false alarm")
 				t.Logf("NOTE: error message is: %v", ts.FailMessage)
 			}
+		})
+	}
+}
+
+func TestTrueFalse(t *testing.T) {
+	candidates := []struct {
+		name             string
+		isTrue           bool
+		wantTrueError    bool
+		wantTrueMessage  string
+		wantFalseError   bool
+		wantFalseMessage string
+	}{
+		{
+			name:             "true",
+			isTrue:           true,
+			wantFalseError:   true,
+			wantFalseMessage: `ERROR: got true, want false`,
+		},
+		{
+			name:            "false",
+			wantTrueError:   true,
+			wantTrueMessage: `ERROR: got false, want true`,
+		},
+	}
+
+	for _, c := range candidates {
+		t.Run(c.name, func(t *testing.T) {
+
+			ts := &TestSpy{}
+			assert.True(ts, c.isTrue)
+			if c.wantTrueError {
+				if !ts.ErrorCalled {
+					t.Errorf("ERROR: error not detected")
+				}
+				if ts.ErrorMessage != c.wantTrueMessage {
+					t.Errorf("ERROR: got: \"%s\", want: \"%s\"",
+						ts.ErrorMessage, c.wantTrueMessage)
+				}
+			}
+			if !c.wantTrueError && ts.ErrorCalled {
+				t.Errorf("ERROR: false alarm")
+				t.Logf("NOTE: error message is: %v", ts.ErrorMessage)
+			}
+
+			ts = &TestSpy{}
+			assert.False(ts, c.isTrue)
+			if c.wantFalseError {
+				if !ts.ErrorCalled {
+					t.Errorf("ERROR: error not detected")
+				}
+				if ts.ErrorMessage != c.wantFalseMessage {
+					t.Errorf("ERROR: got: \"%s\", want: \"%s\"",
+						ts.ErrorMessage, c.wantFalseMessage)
+				}
+			}
+			if !c.wantFalseError && ts.ErrorCalled {
+				t.Errorf("ERROR: false alarm")
+				t.Logf("NOTE: error message is: %v", ts.ErrorMessage)
+			}
+
 		})
 	}
 }

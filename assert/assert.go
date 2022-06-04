@@ -1,4 +1,18 @@
+// package assert provides some utility functions for unit testing.
+// It uses the methods 'Helper', 'Errorf' and 'Fatalf', it can used
+// with testing.T, testing.B and testing.F.
 package assert
+
+// Error messages
+const (
+	msgErrorNotDetected = "ERROR: error not detected"
+	msgUnexpectedError  = "ERROR: unexpected error: \"%v\""
+	msgGotWant          = "ERROR: got: \"%v\", want: \"%v\""
+	msgLengthGotWant    = "ERROR: length: got: %d, want: %d"
+	msgSliceMapGotWant  = "ERROR: [%v]: got: \"%v\", want: \"%v\""
+	msgWantUnequal      = "ERROR: got: \"%v\", want something unequal"
+	msgKeyMissing       = "ERROR: key missing: \"%v\""
+)
 
 // ErrorHelper enables using the functions with testing.T,
 // testing.B and testing.F and for unit testing.
@@ -139,12 +153,20 @@ func NoErrorFail(f FailHelper, err error) {
 	}
 }
 
-const (
-	msgErrorNotDetected = "ERROR: error not detected"
-	msgUnexpectedError  = "ERROR: unexpected error: \"%v\""
-	msgGotWant          = "ERROR: got: \"%v\", want: \"%v\""
-	msgLengthGotWant    = "ERROR: length: got: %d, want: %d"
-	msgSliceMapGotWant  = "ERROR: [%v]: got: \"%v\", want: \"%v\""
-	msgWantUnequal      = "ERROR: got: \"%v\", want something unequal"
-	msgKeyMissing       = "ERROR: key missing: \"%v\""
-)
+// True checks if expression is true.
+// In table tests, use 'Equal' or 'EqualFail' with boolean values.
+func True(t ErrorHelper, got bool) {
+	t.Helper()
+	if !got {
+		t.Errorf("ERROR: got %v, want %v", got, true)
+	}
+}
+
+// False checks if expression is not true.
+// In table tests, use 'Equal' or 'EqualFail' with boolean values.
+func False(t ErrorHelper, got bool) {
+	t.Helper()
+	if got {
+		t.Errorf("ERROR: got %v, want %v", got, false)
+	}
+}
