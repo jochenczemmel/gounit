@@ -7,7 +7,7 @@ type ErrorHelper interface {
 	Errorf(string, ...any)
 }
 
-// Equal checks if two values are equal. It calls t.Error() if not.
+// Equal checks if two values are equal. It calls e.Errorf() if not.
 func Equal[C comparable](e ErrorHelper, got, want C) {
 
 	e.Helper()
@@ -18,7 +18,7 @@ func Equal[C comparable](e ErrorHelper, got, want C) {
 }
 
 // NotEqual checks if two values are not equal, otherwise
-// it calls t.Error().
+// it calls e.Errorf().
 func NotEqual[C comparable](e ErrorHelper, got, want C) {
 
 	e.Helper()
@@ -68,5 +68,36 @@ func EqualMap[M ~map[K]V, K, V comparable](e ErrorHelper,
 		if g != w {
 			e.Errorf("ERROR: [%v]: got: \"%v\", want: \"%v\"", k, g, w)
 		}
+	}
+}
+
+// Error calls e.Errorf() if an error ist wanted and not received
+// or if an error is not wanted but received.
+func Error(e ErrorHelper, err error, want bool) {
+
+	e.Helper()
+
+	if want {
+		IsError(e, err)
+		return
+	}
+	NoError(e, err)
+}
+
+// IsError calls e.Errorf() if err contains no error.
+// In table tests, use function 'Error' with boolean values.
+func IsError(e ErrorHelper, err error) {
+	e.Helper()
+	if err == nil {
+		e.Errorf("ERROR: error not detected")
+	}
+}
+
+// NoError calls e.Errorf() if err contains an error.
+// In table tests, use function 'Error' with boolean values.
+func NoError(e ErrorHelper, err error) {
+	e.Helper()
+	if err != nil {
+		e.Errorf("ERROR: unexpected error: \"%v\"", err)
 	}
 }

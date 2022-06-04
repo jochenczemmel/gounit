@@ -271,3 +271,53 @@ func TestNotEqual(t *testing.T) {
 		})
 	}
 }
+
+func TestError(t *testing.T) {
+	candidates := []struct {
+		name        string
+		inError     error
+		inWant      bool
+		wantError   bool
+		wantMessage string
+	}{
+		{
+			name: "ok no error",
+		},
+		{
+			name:    "ok error",
+			inError: fmt.Errorf("errormessage"),
+			inWant:  true,
+		},
+		{
+			name:        "not ok error",
+			inError:     fmt.Errorf("errormessage"),
+			wantError:   true,
+			wantMessage: `ERROR: unexpected error: "errormessage"`,
+		},
+		{
+			name:        "not ok no error",
+			inWant:      true,
+			wantError:   true,
+			wantMessage: `ERROR: error not detected`,
+		},
+	}
+	for _, c := range candidates {
+		t.Run(c.name, func(t *testing.T) {
+			ts := &TestSpy{}
+			assert.Error(ts, c.inError, c.inWant)
+			if c.wantError {
+				if !ts.ErrorCalled {
+					t.Errorf("ERROR: error not detected")
+				}
+				if ts.ErrorMessage != c.wantMessage {
+					t.Errorf("ERROR: got: \"%s\", want: \"%s\"",
+						ts.ErrorMessage, c.wantMessage)
+				}
+			}
+			if !c.wantError && ts.ErrorCalled {
+				t.Errorf("ERROR: false alarm")
+				t.Logf("NOTE: error message is: %v", ts.ErrorMessage)
+			}
+		})
+	}
+}
