@@ -1,5 +1,5 @@
 // package assert provides some utility functions for unit testing.
-// It uses the methods 'Helper', 'Errorf' and 'Fatalf', it can used
+// It uses the methods 'Helper', 'Errorf' and 'Fatalf', it can be used
 // with testing.T, testing.B and testing.F.
 package assert
 
@@ -158,7 +158,7 @@ func NoErrorFail(f FailHelper, err error) {
 func True(t ErrorHelper, got bool) {
 	t.Helper()
 	if !got {
-		t.Errorf("ERROR: got %v, want %v", got, true)
+		t.Errorf(msgGotWant, got, true)
 	}
 }
 
@@ -167,6 +167,6 @@ func True(t ErrorHelper, got bool) {
 func False(t ErrorHelper, got bool) {
 	t.Helper()
 	if got {
-		t.Errorf("ERROR: got %v, want %v", got, false)
+		t.Errorf(msgGotWant, got, false)
 	}
 }
