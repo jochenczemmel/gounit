@@ -11,6 +11,6 @@ type ErrorHelper interface {
 func Equal[C comparable](e ErrorHelper, got, want C) {
 	e.Helper()
 	if got != want {
-		e.Errorf("ERROR: got\n%v\nwant\n%v\n", got, want)
+		e.Errorf("ERROR: got \"%v\", want \"%v\"", got, want)
 	}
 }
