@@ -7,13 +7,24 @@ type ErrorHelper interface {
 	Errorf(string, ...any)
 }
 
-// Equal checks if two values are equal. It calls Error if not.
+// Equal checks if two values are equal. It calls t.Error() if not.
 func Equal[C comparable](e ErrorHelper, got, want C) {
 
 	e.Helper()
 
 	if got != want {
 		e.Errorf("ERROR: got: \"%v\", want: \"%v\"", got, want)
+	}
+}
+
+// NotEqual checks if two values are not equal, otherwise
+// it calls t.Error().
+func NotEqual[C comparable](e ErrorHelper, got, want C) {
+
+	e.Helper()
+
+	if got == want {
+		e.Errorf("ERROR: got: \"%v\", want something unequal", got)
 	}
 }
 

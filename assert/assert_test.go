@@ -230,3 +230,44 @@ func TestEqualMap(t *testing.T) {
 		})
 	}
 }
+
+func TestNotEqual(t *testing.T) {
+	candidates := []struct {
+		name           string
+		value1, value2 string
+		wantError      bool
+		wantMessage    string
+	}{
+		{
+			name:        "equal",
+			value1:      "a",
+			value2:      "a",
+			wantError:   true,
+			wantMessage: `ERROR: got: "a", want something unequal`,
+		},
+		{
+			name:   "not equal",
+			value1: "a",
+			value2: "b",
+		},
+	}
+	for _, c := range candidates {
+		t.Run(c.name, func(t *testing.T) {
+			ts := &TestSpy{}
+			assert.NotEqual(ts, c.value1, c.value2)
+			if c.wantError {
+				if !ts.ErrorCalled {
+					t.Errorf("ERROR: error not detected")
+				}
+				if ts.ErrorMessage != c.wantMessage {
+					t.Errorf("ERROR: got: \"%s\", want: \"%s\"",
+						ts.ErrorMessage, c.wantMessage)
+				}
+			}
+			if !c.wantError && ts.ErrorCalled {
+				t.Errorf("ERROR: false alarm")
+				t.Logf("NOTE: error message is: %v", ts.ErrorMessage)
+			}
+		})
+	}
+}
