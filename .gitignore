@@ -1,0 +1,8 @@
+
+
+# vim swap files
+*.swp
+
+# go test coverage temp file
+.coverage.txt
+
